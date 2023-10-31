@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="photo-container"></div>
+
+    <script>
+      let currentPage = 1;
+      const photosPerPage = 100;
+
+      function fetchAndDisplayPhotos() {
+        const url = `https://jsonplaceholder.typicode.com/photos?_page=${currentPage}&_limit=${photosPerPage}`;
+
+        fetch(url)
+          .then((response) => response.json())
+          .then((photos) => {
+            const photoContainer = document.getElementById("photo-container");
+
+            photos.forEach((photo) => {
+              const photoElement = document.createElement("div");
+              photoElement.innerHTML = `
+          <img src="${photo.url}" alt="${photo.title}">
+        `;
+              photoContainer.appendChild(photoElement);
+            });
+
+            currentPage++;
+          })
+          .catch((error) => {
+            console.error("Error fetching photos:", error);
+          });
+      }
+
+      function isScrollAtBottom() {
+        return (
+          window.innerHeight + window.scrollY >= document.body.offsetHeight
+        );
+      }
+
+      window.addEventListener("scroll", () => {
+        if (isScrollAtBottom()) {
+          fetchAndDisplayPhotos();
+        }
+      });
+
+      fetchAndDisplayPhotos();
+
+      let a = setInterval(() => {
+        fetchAndDisplayPhotos();
+      }, 5000);
+
+      let b = clearInterval(a);
+      console.log(b);
+    </script>
+  </body>
+</html>
